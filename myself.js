@@ -4,6 +4,7 @@ var require = patchRequire(require),
 function Myself(casper) {
   this.casper = casper;
   this.groupUrl = 'http://www.douban.com/group/';
+  this.id = 'vimagick';
 }
 
 Myself.prototype.group = function() {

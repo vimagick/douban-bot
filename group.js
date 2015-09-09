@@ -10,20 +10,6 @@ Group.prototype.urlFor = function(groupId) {
   return utils.format('%s%s/', this.baseUrl, groupId);
 }
 
-Group.prototype.list = function(groupId, callback) {
-  var url = this.urlFor(groupId);
-  this.casper
-    .thenBypassIf(function() {
-      return this.getCurrentUrl() == url;
-    }, 1)
-    .thenOpen(url, function() {
-      var topics = this.getElementsAttribute('#group-topics td.title a', 'href').map(function(url) {
-        return url.split('/').slice(-2)[0];
-      });
-      callback(topics);
-    });
-}
-
 Group.prototype.info = function(groupId, callback) {
   var url = this.urlFor(groupId);
   this.casper

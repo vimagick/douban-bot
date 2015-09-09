@@ -16,5 +16,5 @@ douban-bot
     - [ ] unlike
 - people
     - [ ] info
-    - [ ] follow
-    - [ ] unfollow
+    - [x] follow
+    - [x] unfollow
