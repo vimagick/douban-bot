@@ -33,8 +33,13 @@ Topic.prototype.like = function(topicId) {
 Topic.prototype.unlike = function(topicId) {
 }
 
-Topic.prototype.comment = function(topicId, content) {
+Topic.prototype.comment = function(topicId, content, commentId) {
   var url = this.urlFor(topicId);
+
+  if (commentId !== undefined) {
+    url += utils.format('?cid=%s#last', commentId);
+  }
+
   this.casper
     .thenBypassIf(function() {
       this.echo('post comment: ' + topicId, 'INFO_BAR');
@@ -60,6 +65,43 @@ Topic.prototype.comment = function(topicId, content) {
         }, function() {
           this.echo('post comment failed', 'ERROR');    
         }, 5000);
+    });
+}
+
+Topic.prototype.info = function(topicId, callback) {
+  var url = this.urlFor(topicId);
+  this.casper
+    .thenBypassIf(function() {
+      this.echo('topic info: ' + topicId, 'INFO_BAR');
+      return this.getCurrentUrl() == url;
+    }, 1)
+    .thenOpen(url, function() {
+      var title = this.getElementInfo('#content>h1').text.trim();
+      var author = this.getElementAttribute('#content h3 .from a', 'href').split('/').slice(-2)[0];
+      var date = this.fetchText('#content h3 .color-green');
+      var content = this.getHTML('#content .topic-doc .topic-content').trim();
+      var comments = this.evaluate(function() {
+        return __utils__.findAll('ul#comments>li').map(function(x) {
+          var id = x.getAttribute('id'),
+              content = x.querySelector('.reply-doc>p').innerHTML,
+              author = x.querySelector('h4>a').getAttribute('href').split('/').slice(-2)[0],
+              date = x.querySelector('h4>span.pubtime').innerHTML;
+          return {
+            id: id,
+            author: author,
+            date: date,
+            content: content,
+          };
+        });
+      });
+      callback({
+        id: topicId,
+        author: author,
+        date: date,
+        title: title,
+        content: content,
+        comments: comments,
+      });
     });
 }
 

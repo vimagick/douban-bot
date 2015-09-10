@@ -15,6 +15,18 @@ casper.start();
 
 group.join('scrapy');
 
+topic.info('79461940', function(info) {
+  utils.dump(info);
+  var txt = utils.format('到此一游 @ %s', new Date().toUTCString());
+  if (info.comments.length > 0) {
+    var last = info.comments.slice(-1)[0];
+    topic.comment('79461940', txt, last.id);
+  } else {
+    topic.comment('79461940', txt);
+  }
+});
+
+/*
 group.info('scrapy', function(info) {
   utils.dump(info);
 
@@ -49,6 +61,7 @@ group.info('scrapy', function(info) {
     topic.comment(tid, txt);
   });
 });
+*/
 
 group.quit('scrapy');
 
