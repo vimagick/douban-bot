@@ -14,12 +14,11 @@ Topic.prototype.like = function(topicId) {
   var url = this.urlFor(topicId);
   this.casper
     .thenBypassIf(function() {
-      this.echo('post comment: ' + topicId, 'INFO_BAR');
+      this.echo('like topic: ' + topicId, 'INFO_BAR');
       return this.getCurrentUrl() == url;
     }, 1)
     .thenOpen(url)
     .thenBypassIf(function() {
-      this.echo('like topic: ' + topicId, 'INFO_BAR');
       return this.exists('a.fav-cancel');
     }, 1)
     .thenClick('a.fav-add')
@@ -106,15 +105,17 @@ Topic.prototype.comment = function(topicId, content, commentId) {
       this.echo('post comment: ' + topicId, 'INFO_BAR');
       return this.getCurrentUrl() == url;
     }, 1)
-    .thenOpen(url)
-    .thenBypassIf(function() {
-      var flag = this.exists('ul#comments ~ div.paginator');
-      if (flag) {
-        url = this.getElementAttribute('ul#comments ~ div.paginator>a:last-of-type', 'href');
+    .thenOpen(url, function() {
+      if (url.indexOf('#last') !== -1) {
+        return true;
       }
-      return flag;
+      var flag1 = this.exists('ul#comments ~ div.paginator'),
+          flag2 = this.exists('form[name="comment_form"]');
+      if (flag1 && !flag2) {
+        var lastPageUrl = this.getElementAttribute('ul#comments ~ div.paginator>a:last-of-type', 'href');
+        this.open(lastPageUrl);
+      }
     })
-    .thenOpen(url)
     .thenBypassIf(function() {
       var blocked  = this.exists('#captcha_image');
       if (blocked) {
