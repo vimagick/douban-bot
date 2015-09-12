@@ -70,6 +70,64 @@ Group.prototype.info = function(groupId, callback) {
     });
 }
 
+Group.prototype.newTopic = function(groupId, title, content) {
+  var url = this.urlFor(groupId);
+  this.casper
+    .thenOpen(url + 'new_topic', function() {
+      this.echo('post topic', 'INFO');
+      this.fill('form.group-form', {
+        rev_title: title,
+        rev_text: content,
+      })
+    })
+    .thenClick('#post-btn')
+    .thenBypassIf(function() {
+      var flag = this.exists('#captcha_image');
+      if (flag) {
+        var img = this.getElementAttribute('#captcha_image', 'src');
+        this.echo('blocked: ' + img, 'ERROR');
+      }
+      return flag;
+    }, 1)
+    .waitFor(function() {
+      return this.getCurrentUrl() === url;
+    }, function() {
+      this.echo('post topic success', 'INFO');
+    }, function() {
+      this.echo('post topic success', 'ERROR');
+    }, 5000);
+}
+
+Group.prototype.newLink = function(groupId, title, url, content, tags) {
+  var url = this.urlFor(groupId);
+  this.casper
+    .thenOpen(url + 'new_link', function() {
+      this.echo('post link', 'INFO');
+      this.fill('form#link-form', {
+        title: title,
+        url: url,
+        rec_words: content,
+        author_tags_clone: tags,
+      });
+    })
+    .thenClick('#post-btn')
+    .thenBypassIf(function() {
+      var flag = this.exists('#captcha_image');
+      if (flag) {
+        var img = this.getElementAttribute('#captcha_image', 'src');
+        this.echo('blocked: ' + img, 'ERROR');
+      }
+      return flag;
+    }, 1)
+    .waitFor(function() {
+      return this.getCurrentUrl() === url;
+    }, function() {
+      this.echo('post link success', 'INFO');
+    }, function() {
+      this.echo('post link success', 'ERROR');
+    }, 5000);
+}
+
 Group.prototype.join = function(groupId) {
   this.casper
     .thenOpen(this.urlFor(groupId))

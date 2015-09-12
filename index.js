@@ -15,6 +15,10 @@ casper.start();
 
 group.join('scrapy');
 
+group.newTopic('scrapy', 'hello world', 'foo bar');
+group.newLink('scrapy', 'hello world', 'https://www.youtube.com/', 'foo bar', 'youtube,google');
+
+/*
 topic.info('79461940', function(info) {
   utils.dump(info);
   var txt = utils.format('到此一游 @ %s', new Date().toUTCString());
@@ -25,6 +29,7 @@ topic.info('79461940', function(info) {
     topic.comment('79461940', txt);
   }
 });
+*/
 
 /*
 group.info('scrapy', function(info) {

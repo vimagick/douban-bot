@@ -11,10 +11,10 @@ douban-bot
     - [x] info
     - [x] join
     - [x] quit
-    - [ ] newLink
-    - [ ] newTopic
+    - [x] newLink
+    - [x] newTopic
 - topic
-    - [ ] info
+    - [x] info
     - [x] comment
     - [x] like
     - [ ] unlike
