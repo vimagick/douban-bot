@@ -108,6 +108,14 @@ Topic.prototype.comment = function(topicId, content, commentId) {
     }, 1)
     .thenOpen(url)
     .thenBypassIf(function() {
+      var flag = this.exists('ul#comments ~ div.paginator');
+      if (flag) {
+        url = this.getElementAttribute('ul#comments ~ div.paginator>a:last-of-type', 'href');
+      }
+      return flag;
+    })
+    .thenOpen(url)
+    .thenBypassIf(function() {
       var blocked  = this.exists('#captcha_image');
       if (blocked) {
         var img = this.getElementAttribute('#captcha_image', 'src');
