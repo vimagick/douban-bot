@@ -36,7 +36,7 @@ Topic.prototype.remove = function(topicId) {
   var url = this.urlFor(topicId);
   this.casper
     .thenBypassIf(function() {
-      this.echo('remove topic: ' + topicId, 'INFO');
+      this.echo('remove topic: ' + topicId, 'INFO_BAR');
       return this.getCurrentUrl() === url;
     }, 1)
     .thenOpen(url)
@@ -63,7 +63,7 @@ Topic.prototype.edit = function(topicId, title, content) {
   var url = this.urlFor(topicId);
   this.casper
     .thenBypassIf(function() {
-      this.echo('edit topic: ' + topicId, 'INFO');
+      this.echo('edit topic: ' + topicId, 'INFO_BAR');
       return this.getCurrentUrl() === url;
     }, 1)
     .thenOpen(url)
