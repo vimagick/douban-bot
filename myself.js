@@ -3,21 +3,19 @@ var require = patchRequire(require),
 
 function Myself(casper) {
   this.casper = casper;
-  this.groupUrl = 'http://www.douban.com/group/';
+  this.selfUrl = 'http://www.douban.com/mine/';
   this.id = 'vimagick';
 }
 
-Myself.prototype.group = function() {
-  var that = this;
-  this.casper
-    .thenOpen(this.groupUrl, function() {this.echo('list', 'INFO');})
-    .thenClick('#g-reguler-groups .more a')
-    .waitForUrl(/joins$/)
-    .thenEvaluate(function() {
-      __utils__.findAll('.group-list .info a').forEach(function(x) {
-        __utils__.echo(x.getAttribute('title'));
-      });
+Myself.prototype.info = function(callback) {
+  this.casper.thenOpen(this.selfUrl, function() {
+    var id = this.getElementAttribute('#db-usr-profile .pic a', 'href').split('/').slice(-2)[0],
+        name = this.getElementAttribute('#db-usr-profile .pic img', 'alt');
+    callback({
+      id: id,
+      name: name,
     });
+  });
 }
 
 exports.create = function(casper) {

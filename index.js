@@ -3,6 +3,11 @@ require('cookies').loadCookies('cookies.txt');
 var casper = require('casper').create({
   logLevel: 'info',
   verbose: true,
+  pageSettings: {
+      loadImages: false,
+      loadPlugins: false,
+      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36',
+  },
 });
 
 var utils = require('utils'),
@@ -12,6 +17,20 @@ var utils = require('utils'),
     topic = require('./topic').create(casper);
 
 casper.start();
+
+/*
+myself.info(function(x) {
+  people.info(x.id, function(info) {
+    utils.dump(info);
+    info.publish.forEach(function(y) {
+      topic.info(y.id, function(z) {
+        utils.dump(z);
+        topic.edit(y.id, '全自动化(发帖/评论/回复)', 'Greenwich Mean Time\n=================\n');
+      });
+    });
+  });
+});
+*/
 
 group.join('python');
 

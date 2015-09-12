@@ -4,7 +4,7 @@ douban-bot
 基于CasperJS的豆瓣机器人.
 
 - myself
-    - [ ] info
+    - [x] info
     - [ ] tweet
     - [ ] note
 - group
@@ -21,7 +21,7 @@ douban-bot
     - [x] remove
     - [x] edit
 - people
-    - [ ] info
+    - [x] info
     - [x] follow
     - [x] unfollow
     - [ ] block
