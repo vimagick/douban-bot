@@ -55,9 +55,7 @@ People.prototype.unfollow = function(peopleId) {
     .thenBypassIf(function() {
       return this.exists('a.add_contact');
     }, 1)
-    .thenClick('#follow-cancel', function() {
-      this.capture('x.png');
-    })
+    .thenClick('#follow-cancel')
     .waitForSelector('a.add_contact', function() {
       this.echo('unfollow people success', 'INFO');
     }, function() {

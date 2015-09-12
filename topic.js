@@ -33,6 +33,67 @@ Topic.prototype.like = function(topicId) {
 Topic.prototype.unlike = function(topicId) {
 }
 
+Topic.prototype.remove = function(topicId) {
+  var url = this.urlFor(topicId);
+  this.casper
+    .thenBypassIf(function() {
+      this.echo('remove topic: ' + topicId, 'INFO');
+      return this.getCurrentUrl() === url;
+    }, 1)
+    .thenOpen(url)
+    .thenBypassUnless(function() {
+      var flag = this.exists('div.topic-opt a[href*="remove"]');
+      if (! flag) {
+        this.echo('cannot remove topic', 'ERROR');
+      }
+      return flag;
+    }, 1)
+    .then(function() {
+      this.thenClick('div.topic-opt a[href*="/remove"]')
+        .waitFor(function() {
+          return this.getCurrentUrl().indexOf('/topic/') === -1;
+        }, function() {
+          this.echo('remove topic success', 'INFO'); 
+        }, function() {
+          this.echo('remove topic failed', 'INFO'); 
+        });
+    });
+}
+
+Topic.prototype.edit = function(topicId, title, content) {
+  var url = this.urlFor(topicId);
+  this.casper
+    .thenBypassIf(function() {
+      this.echo('edit topic: ' + topicId, 'INFO');
+      return this.getCurrentUrl() === url;
+    }, 1)
+    .thenOpen(url)
+    .thenBypassUnless(function() {
+      var flag = this.exists('div.topic-opt a[href*="/edit"]');
+      if (! flag) {
+        this.echo('cannot edit topic', 'ERROR');
+      }
+      return flag;
+    }, 1)
+    .then(function() {
+      this
+        .thenClick('div.topic-opt a[href*="/edit"]', function() {
+          this.fill('form.group-form', {
+            rev_title: title,
+            rev_text: content,
+          });
+        }) 
+        .thenClick('input[name="rev_submit"]')
+        .waitFor(function() {
+          return this.getCurrentUrl() === url;
+        }, function() {
+          this.echo('edit topic success', 'INFO');
+        }, function() {
+          this.echo('edit topic success', 'ERROR');
+        }, 5000);
+    });
+}
+
 Topic.prototype.comment = function(topicId, content, commentId) {
   var url = this.urlFor(topicId);
 
@@ -79,13 +140,13 @@ Topic.prototype.info = function(topicId, callback) {
       var title = this.getElementInfo('#content>h1').text.trim();
       var author = this.getElementAttribute('#content h3 .from a', 'href').split('/').slice(-2)[0];
       var date = this.fetchText('#content h3 .color-green');
-      var content = this.getHTML('#content .topic-doc .topic-content').trim();
+      var content = this.fetchText('#content .topic-doc .topic-content').trim();
       var comments = this.evaluate(function() {
         return __utils__.findAll('ul#comments>li').map(function(x) {
           var id = x.getAttribute('id'),
-              content = x.querySelector('.reply-doc>p').innerHTML,
+              content = x.querySelector('.reply-doc>p').innerText,
               author = x.querySelector('h4>a').getAttribute('href').split('/').slice(-2)[0],
-              date = x.querySelector('h4>span.pubtime').innerHTML;
+              date = x.querySelector('h4>span.pubtime').innerText;
           return {
             id: id,
             author: author,

@@ -13,10 +13,15 @@ var utils = require('utils'),
 
 casper.start();
 
-group.join('scrapy');
+group.join('python');
 
-group.newTopic('scrapy', 'hello world', 'foo bar');
-group.newLink('scrapy', 'hello world', 'https://www.youtube.com/', 'foo bar', 'youtube,google');
+topic.info('79535070', function(info) {
+  utils.dump(info);
+  var content = info.content + '\n' + new Date().toUTCString();
+  topic.edit('79535070', info.title, content);
+});
+
+group.quit('python');
 
 /*
 topic.info('79461940', function(info) {
@@ -67,7 +72,5 @@ group.info('scrapy', function(info) {
   });
 });
 */
-
-group.quit('scrapy');
 
 casper.run();

@@ -78,7 +78,7 @@ Group.prototype.newTopic = function(groupId, title, content) {
       this.fill('form.group-form', {
         rev_title: title,
         rev_text: content,
-      })
+      });
     })
     .thenClick('#post-btn')
     .thenBypassIf(function() {

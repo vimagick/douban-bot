@@ -18,7 +18,8 @@ douban-bot
     - [x] comment
     - [x] like
     - [ ] unlike
-    - [ ] delete
+    - [x] remove
+    - [x] edit
 - people
     - [ ] info
     - [x] follow
