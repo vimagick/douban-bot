@@ -34,6 +34,9 @@ myself.info(function(x) {
 
 casper.thenOpen('http://www.youku.com/', function() {
   var videos = this.getElementsAttribute('#m_205805 .v-link a', 'href').slice(0, 5);
+  var titles = this.getElementsAttribute('#m_205805 .v-link a', 'title').slice(0, 5);
+
+  utils.dump(titles);
 
   group.join('python');
 
