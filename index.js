@@ -25,7 +25,7 @@ myself.info(function(x) {
     info.publish.forEach(function(y) {
       topic.info(y.id, function(z) {
         utils.dump(z);
-        topic.edit(y.id, '全自动化(发帖/评论/回复)', 'Greenwich Mean Time\n=================\n');
+        topic.edit(y.id, '↑ [置顶] 全自动化(发帖/评论/回复)', y.content);
       });
     });
   });
@@ -35,10 +35,10 @@ myself.info(function(x) {
 group.join('python');
 
 topic.info('79535070', function(info) {
-  var content = info.content + '\n' + new Date().toUTCString();
+  var content = '优酷最新视频 (' + Date() + ')';
   var comment = utils.format('到此一游 @ %s', new Date().toUTCString());
-
-  topic.edit('79535070', info.title, content);
+  var videos = require('./youku');
+  topic.edit('79535070', info.title, content, videos);
 
   if (info.comments.length > 0) {
     var last = info.comments.slice(-1)[0];

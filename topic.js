@@ -59,7 +59,7 @@ Topic.prototype.remove = function(topicId) {
     });
 }
 
-Topic.prototype.edit = function(topicId, title, content) {
+Topic.prototype.edit = function(topicId, title, content, videos) {
   var url = this.urlFor(topicId);
   this.casper
     .thenBypassIf(function() {
@@ -81,7 +81,23 @@ Topic.prototype.edit = function(topicId, title, content) {
             rev_title: title,
             rev_text: content,
           });
-        }) 
+        })
+        .thenBypassIf(function() {
+          return videos === undefined || videos.length === 0;
+        }, 1)
+        .then(function() {
+          this.echo('add videos', 'INFO');
+          this.eachThen(videos, function(response) {
+            var url = response.data;
+            this.evaluate(function(url) {
+                __utils__.echo(url);
+                addVideo();
+                $('.add-video-panel .video-url').val(url);
+                $('.add-video-panel form').submit();
+            }, url);
+            this.wait(1000);
+          });
+        })
         .thenClick('input[name="rev_submit"]')
         .waitFor(function() {
           return this.getCurrentUrl() === url;
