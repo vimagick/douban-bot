@@ -40,16 +40,16 @@ casper.thenOpen('http://www.youku.com/', function() {
 
   group.join('python');
 
-  topic.info('79535070', function(info) {
+  topic.info('59455038', function(info) {
     var content = '⇒⇒⇒ 优酷最新视频 (' + Date() + ') ⇐⇐⇐';
     var comment = utils.format('到此一游 @ %s', new Date().toUTCString());
-    topic.edit('79535070', info.title, content, videos);
+    topic.edit('59455038', info.title, content, videos);
 
     if (info.comments.length > 0) {
       var last = info.comments.slice(-1)[0];
-      topic.comment('79535070', comment, last.id);
+      topic.comment('59455038', comment, last.id);
     } else {
-      topic.comment('79535070', comment);
+      topic.comment('59455038', comment);
     }
   });
 
