@@ -32,22 +32,25 @@ myself.info(function(x) {
 });
 */
 
-group.join('python');
+casper.thenOpen('http://www.youku.com/', function() {
+  var videos = this.getElementsAttribute('#m_205805 .v-link a', 'href').slice(0, 5);
 
-topic.info('79535070', function(info) {
-  var content = '优酷最新视频 (' + Date() + ')';
-  var comment = utils.format('到此一游 @ %s', new Date().toUTCString());
-  var videos = require('./youku');
-  topic.edit('79535070', info.title, content, videos);
+  group.join('python');
 
-  if (info.comments.length > 0) {
-    var last = info.comments.slice(-1)[0];
-    topic.comment('79535070', comment, last.id);
-  } else {
-    topic.comment('79535070', comment);
-  }
+  topic.info('79535070', function(info) {
+    var content = '⇒⇒⇒ 优酷最新视频 (' + Date() + ') ⇐⇐⇐';
+    var comment = utils.format('到此一游 @ %s', new Date().toUTCString());
+    topic.edit('79535070', info.title, content, videos);
+
+    if (info.comments.length > 0) {
+      var last = info.comments.slice(-1)[0];
+      topic.comment('79535070', comment, last.id);
+    } else {
+      topic.comment('79535070', comment);
+    }
+  });
+
+  group.quit('python');
 });
-
-group.quit('python');
 
 casper.run();
