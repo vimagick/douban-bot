@@ -154,6 +154,32 @@ Topic.prototype.comment = function(topicId, content, commentId) {
     });
 }
 
+Topic.prototype.removeComment = function(topicId, commentId) {
+  var url = this.urlFor(topicId);
+  var css = utils.format('a.lnk-delete-comment[data-cid="%s"]', commentId);
+
+  this.casper
+    .thenBypassIf(function() {
+      this.echo('remove comment: ' + commentId, 'INFO_BAR');
+      return this.getCurrentUrl() == url;
+    }, 1)
+    .thenOpen(url)
+    .thenBypassUnless(function() {
+      return this.exists(css);
+    }, 1)
+    .then(function() {
+      this
+        .thenClick(css)
+        .waitFor(function() {
+          return ! this.exists(css);
+        }, function() {
+          this.echo('remove comment success', 'INFO');
+        }, function() {
+          this.echo('remove comment failed', 'ERROR');
+        }, 5000);
+    });
+}
+
 Topic.prototype.info = function(topicId, callback) {
   var url = this.urlFor(topicId);
   this.casper

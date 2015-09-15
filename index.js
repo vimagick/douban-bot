@@ -48,6 +48,7 @@ casper.thenOpen('http://www.youku.com/', function() {
     if (info.comments.length > 0) {
       var last = info.comments.slice(-1)[0];
       topic.comment('79471561', comment, last.id);
+      topic.removeComment('79471561', last.id);
     } else {
       topic.comment('79471561', comment);
     }
