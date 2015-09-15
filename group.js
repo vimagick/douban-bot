@@ -11,6 +11,7 @@ Group.prototype.urlFor = function(groupId) {
 }
 
 Group.prototype.info = function(groupId, callback) {
+  var info = {};
   var url = this.urlFor(groupId);
   this.casper
     .thenBypassIf(function() {
@@ -40,7 +41,8 @@ Group.prototype.info = function(groupId, callback) {
         return __utils__.findAll('#group-topics tr:nth-child(n+2)').map(function(x) {
           var id = x.querySelector('td.title>a').getAttribute('href').split('/').slice(-2)[0];
           var title = x.querySelector('td.title>a').innerText;
-          var author = x.querySelector('td[nowrap]>a').getAttribute('href').split('/').slice(-2)[0];
+          var uid = x.querySelector('td[nowrap]>a').getAttribute('href').split('/').slice(-2)[0];
+          var uname = x.fetchText('td[nowrap]>a');
           var reply = parseInt('0' + x.querySelector('td:nth-child(3)').innerText);
           var date = x.querySelector('td.time').innerText;
           if (date.indexOf(':') !== -1) {
@@ -49,14 +51,15 @@ Group.prototype.info = function(groupId, callback) {
           return {
             id: id,
             title: title,
-            author: author,
+            uid: uid,
+            uname: uname,
             reply: reply,
             date: date,
           };
         });
       });
 
-      callback({
+      info = utils.mergeObjects(info, {
         name: name,
         owner: owner,
         date: date,
@@ -67,6 +70,45 @@ Group.prototype.info = function(groupId, callback) {
         related_groups: related_groups,
         latest_topics: latest_topics,
       });
+    })
+    .thenOpen(url + 'discussion', function() {
+      var pages = parseInt(this.fetchText('.paginator>a:last-of-type'));
+      info = utils.mergeObjects(info, {
+        pages: pages
+      });
+    })
+    .then(function() {
+      callback(info);
+    });
+}
+
+Group.prototype.listTopics = function(groupId, page, callback) {
+  var url = utils.format('%sdiscussion?start=%d', this.urlFor(groupId), (page-1)*25);
+  this.casper
+    .thenOpen(url)
+    .then(function() {
+      var topics = this.evaluate(function() {
+        return __utils__.findAll('#content tr:nth-child(n+2)').map(function(x) {
+          var id = x.querySelector('td.title>a').getAttribute('href').split('/').slice(-2)[0];
+          var title = x.querySelector('td.title>a').innerText;
+          var uid = x.querySelector('td[nowrap]>a').getAttribute('href').split('/').slice(-2)[0];
+          var uname = x.querySelector('td[nowrap]>a').innerText;
+          var reply = parseInt('0' + x.querySelector('td:nth-child(3)').innerText);
+          var date = x.querySelector('td.time').innerText;
+          if (date.indexOf(':') !== -1) {
+            date = new Date().getUTCFullYear() + '-' + date;
+          }
+          return {
+            id: id,
+            title: title,
+            uid: uid,
+            uname: name,
+            reply: reply,
+            date: date,
+          };
+        });
+      });
+      callback(topics);
     });
 }
 

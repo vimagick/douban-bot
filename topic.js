@@ -190,18 +190,21 @@ Topic.prototype.info = function(topicId, callback) {
     .thenOpen(url, function() {
       var group = this.getElementAttribute('.group-item .title>a', 'href').split('/').slice(-2)[0];
       var title = this.getElementInfo('#content h1').text.trim();
-      var author = this.getElementAttribute('#content h3 .from a', 'href').split('/').slice(-2)[0];
+      var uid = this.getElementAttribute('#content h3 .from a', 'href').split('/').slice(-2)[0];
+      var uname = this.fetchText('#content h3 .from a');
       var date = this.fetchText('#content h3 .color-green');
       var content = this.fetchText('#content .topic-doc .topic-content').trim();
       var comments = this.evaluate(function() {
         return __utils__.findAll('ul#comments>li').map(function(x) {
           var id = x.getAttribute('id'),
               content = x.querySelector('.reply-doc>p').innerText,
-              author = x.querySelector('h4>a').getAttribute('href').split('/').slice(-2)[0],
+              uid = x.querySelector('h4>a').getAttribute('href').split('/').slice(-2)[0],
+              uname = x.querySelector('h4>a').innerText;
               date = x.querySelector('h4>span.pubtime').innerText;
           return {
             id: id,
-            author: author,
+            uid: uid,
+            uname: uname,
             date: date,
             content: content,
           };
@@ -209,7 +212,8 @@ Topic.prototype.info = function(topicId, callback) {
       });
       callback({
         id: topicId,
-        author: author,
+        uid: uid,
+        uname: uname,
         date: date,
         title: title,
         content: content,

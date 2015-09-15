@@ -22,12 +22,13 @@ casper.start();
 group.join('python');
 
 group.info('python', function(gInfo) {
-  var topics = gInfo.latest_topics.reverse();
-  var target = _.min(topics, function(x) {return x.reply;});
-  topic.info(target.id, function(tInfo) {
-    var txt = utils.format('到此一游 @ %s', new Date().toUTCString());
-    utils.dump(tInfo);
-    topic.comment(tInfo.id, txt);
+  group.listTopics('python', gInfo.pages, function(topics) {
+    var target = _.min(topics, function(x) {return x.reply;});
+    topic.info(target.id, function(tInfo) {
+      var txt = utils.format('@%s: %s', tInfo.uname, tInfo.title);
+      utils.dump(tInfo);
+      topic.comment(tInfo.id, txt);
+    });
   });
 });
 
