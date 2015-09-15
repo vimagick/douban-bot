@@ -189,7 +189,7 @@ Topic.prototype.info = function(topicId, callback) {
     }, 1)
     .thenOpen(url, function() {
       var group = this.getElementAttribute('.group-item .title>a', 'href').split('/').slice(-2)[0];
-      var title = this.getElementInfo('#content>h1').text.trim();
+      var title = this.getElementInfo('#content h1').text.trim();
       var author = this.getElementAttribute('#content h3 .from a', 'href').split('/').slice(-2)[0];
       var date = this.fetchText('#content h3 .color-green');
       var content = this.fetchText('#content .topic-doc .topic-content').trim();

@@ -18,43 +18,22 @@ var utils = require('utils'),
 
 casper.start();
 
-/*
-myself.info(function(x) {
-  people.info(x.id, function(info) {
-    utils.dump(info);
-    info.publish.forEach(function(y) {
-      topic.info(y.id, function(z) {
-        utils.dump(z);
-        topic.edit(y.id, '↑ [置顶] 全自动化(发帖/评论/回复)', y.content);
+group.join('python');
+
+group.info('python', function(gInfo) {
+  for (var i=0; i<gInfo.latest_topics.length; i++) {
+    var t = gInfo.latest_topics[i];
+    if (t.reply === 0) {
+      topic.info(t.id, function(tInfo) {
+        var txt = utils.format('到此一游 @ %s', new Date().toUTCString());
+        utils.dump(tInfo);
+        topic.comment(tInfo.id, txt);
       });
-    });
-  });
-});
-*/
-
-casper.thenOpen('http://www.youku.com/', function() {
-  var videos = this.getElementsAttribute('#m_205805 .v-link a', 'href').slice(0, 5);
-  var titles = this.getElementsAttribute('#m_205805 .v-link a', 'title').slice(0, 5);
-
-  utils.dump(titles);
-
-  group.join('SNSJZJ');
-
-  topic.info('79471561', function(info) {
-    var content = '⇒⇒⇒ 优酷最新视频 (' + Date() + ') ⇐⇐⇐';
-    var comment = utils.format('到此一游 @ %s', new Date().toUTCString());
-    topic.edit('79471561', info.title, content, videos);
-
-    if (info.comments.length > 0) {
-      var last = info.comments.slice(-1)[0];
-      topic.comment('79471561', comment, last.id);
-      topic.removeComment('79471561', last.id);
-    } else {
-      topic.comment('79471561', comment);
+      break;
     }
-  });
-
-  group.quit('SNSJZJ');
+  }
 });
+
+group.quit('python');
 
 casper.run();

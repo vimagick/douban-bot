@@ -39,10 +39,10 @@ Group.prototype.info = function(groupId, callback) {
       var latest_topics = this.evaluate(function() {
         return __utils__.findAll('#group-topics tr:nth-child(n+2)').map(function(x) {
           var id = x.querySelector('td.title>a').getAttribute('href').split('/').slice(-2)[0];
-          var title = x.querySelector('td.title>a').innerHTML;
+          var title = x.querySelector('td.title>a').innerText;
           var author = x.querySelector('td[nowrap]>a').getAttribute('href').split('/').slice(-2)[0];
-          var reply = parseInt(x.querySelector('td:nth-child(3)').innerHTML);
-          var date = x.querySelector('td.time').innerHTML;
+          var reply = parseInt('0' + x.querySelector('td:nth-child(3)').innerText);
+          var date = x.querySelector('td.time').innerText;
           if (date.indexOf(':') !== -1) {
             date = new Date().getUTCFullYear() + '-' + date;
           }
