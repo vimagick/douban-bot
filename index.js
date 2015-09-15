@@ -22,16 +22,18 @@ casper.start();
 group.join('python');
 
 group.info('python', function(gInfo) {
-  var max = _.max(gInfo.latest_topics, function(x) {return x.reply;});
-  if (max<10) {
-    casper.echo('done', 'GREEN_BAR');
+  var t = _.chain(gInfo.latest_topics)
+           .filter(function(x) {return ! x.top;})
+           .max(function(x) {return x.reply;})
+           .value();
+  if (t.reply < 5) {
+    casper.echo('done: ' + t.reply, 'GREEN_BAR');
     return;
   }
   group.listTopics('python', gInfo.pages, function(topics) {
     var target = _.min(topics, function(x) {return x.reply;});
     topic.info(target.id, function(tInfo) {
       var txt = utils.format('@%s: %s', tInfo.uname, tInfo.title);
-      utils.dump(tInfo);
       topic.comment(tInfo.id, txt);
     });
   });

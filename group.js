@@ -39,7 +39,11 @@ Group.prototype.info = function(groupId, callback) {
 
       var latest_topics = this.evaluate(function() {
         return __utils__.findAll('#group-topics tr:nth-child(n+2)').map(function(x) {
+          if (! x.querySelector('td.title')) {
+            return;
+          }
           var id = x.querySelector('td.title>a').getAttribute('href').split('/').slice(-2)[0];
+          var top = x.querySelector('td.title>span.pl') ? true : false;
           var title = x.querySelector('td.title>a').innerText;
           var uid = x.querySelector('td[nowrap]>a').getAttribute('href').split('/').slice(-2)[0];
           var uname = x.querySelector('td[nowrap]>a').innerText;
@@ -50,13 +54,14 @@ Group.prototype.info = function(groupId, callback) {
           }
           return {
             id: id,
+            top: top,
             title: title,
             uid: uid,
             uname: uname,
             reply: reply,
             date: date,
           };
-        });
+        }).filter(function(x) {if (x) return x;});
       });
 
       info = utils.mergeObjects(info, {
@@ -89,7 +94,11 @@ Group.prototype.listTopics = function(groupId, page, callback) {
     .then(function() {
       var topics = this.evaluate(function() {
         return __utils__.findAll('#content tr:nth-child(n+2)').map(function(x) {
+          if (! x.querySelector('td.title')) {
+            return;
+          }
           var id = x.querySelector('td.title>a').getAttribute('href').split('/').slice(-2)[0];
+          var top = x.querySelector('td.title>span.pl') ? true : false;
           var title = x.querySelector('td.title>a').innerText;
           var uid = x.querySelector('td[nowrap]>a').getAttribute('href').split('/').slice(-2)[0];
           var uname = x.querySelector('td[nowrap]>a').innerText;
@@ -100,13 +109,14 @@ Group.prototype.listTopics = function(groupId, page, callback) {
           }
           return {
             id: id,
+            top: top,
             title: title,
             uid: uid,
             uname: name,
             reply: reply,
             date: date,
           };
-        });
+        }).filter(function(x) {if (x) return x;});
       });
       callback(topics);
     });
