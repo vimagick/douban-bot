@@ -10,7 +10,8 @@ var casper = require('casper').create({
   },
 });
 
-var utils = require('utils'),
+var _ = require('./underscore'),
+    utils = require('utils'),
     myself = require('./myself').create(casper),
     people = require('./people').create(casper),
     group = require('./group').create(casper),
@@ -21,17 +22,13 @@ casper.start();
 group.join('python');
 
 group.info('python', function(gInfo) {
-  for (var i=0; i<gInfo.latest_topics.length; i++) {
-    var t = gInfo.latest_topics[i];
-    if (t.reply === 0) {
-      topic.info(t.id, function(tInfo) {
-        var txt = utils.format('到此一游 @ %s', new Date().toUTCString());
-        utils.dump(tInfo);
-        topic.comment(tInfo.id, txt);
-      });
-      break;
-    }
-  }
+  var topics = gInfo.latest_topics.reverse();
+  var target = _.min(topics, function(x) {return x.reply;});
+  topic.info(target.id, function(tInfo) {
+    var txt = utils.format('到此一游 @ %s', new Date().toUTCString());
+    utils.dump(tInfo);
+    topic.comment(tInfo.id, txt);
+  });
 });
 
 group.quit('python');
