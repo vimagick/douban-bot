@@ -42,7 +42,7 @@ Group.prototype.info = function(groupId, callback) {
           var id = x.querySelector('td.title>a').getAttribute('href').split('/').slice(-2)[0];
           var title = x.querySelector('td.title>a').innerText;
           var uid = x.querySelector('td[nowrap]>a').getAttribute('href').split('/').slice(-2)[0];
-          var uname = x.fetchText('td[nowrap]>a');
+          var uname = x.querySelector('td[nowrap]>a').innerText;
           var reply = parseInt('0' + x.querySelector('td:nth-child(3)').innerText);
           var date = x.querySelector('td.time').innerText;
           if (date.indexOf(':') !== -1) {

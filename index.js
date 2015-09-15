@@ -22,6 +22,11 @@ casper.start();
 group.join('python');
 
 group.info('python', function(gInfo) {
+  var max = _.max(gInfo.latest_topics, function(x) {return x.reply;});
+  if (max<10) {
+    casper.echo('done', 'GREEN_BAR');
+    return;
+  }
   group.listTopics('python', gInfo.pages, function(topics) {
     var target = _.min(topics, function(x) {return x.reply;});
     topic.info(target.id, function(tInfo) {
