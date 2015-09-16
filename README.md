@@ -27,7 +27,7 @@ douban-bot
     - [x] follow
     - [x] unfollow
     - [ ] block
-    - [ ] report
+    - [x] report
 - doumail
     - [ ] list
     - [ ] delete

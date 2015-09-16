@@ -52,12 +52,42 @@ People.prototype.info = function(peopleId, callback) {
     });
 }
 
+People.prototype.report = function(peopleId, reason) {
+  var url = this.urlFor(peopleId);
+  this.casper
+    .thenBypassIf(function() {
+      this.echo('report user: ' + peopleId, 'INFO_BAR');
+      return this.getCurrentUrl() === url;
+    }, 1)
+    .thenOpen(url)
+    .thenClick('#report-user')
+    .waitForUrl(/audit_report/, function() {
+       this.fill('#content form', {
+          reason: reason,
+       }); 
+    }, function() {
+      this.echo('report user timeout', 'ERROR');
+      this.bypass(1);
+    }, 5000)
+    .then(function() {
+      this
+        .thenClick('#content form input[name="report_submit"]')
+        .waitFor(function() {
+          return ! this.exists('#content form');
+        }, function() {
+          this.echo('report user success', 'INFO');
+        }, function() {
+          this.echo('report user failed', 'ERROR');
+        }, 5000);
+    });
+}
+
 People.prototype.follow = function(peopleId) {
   var url = this.urlFor(peopleId);
   this.casper
     .thenBypassIf(function() {
       this.echo('follow people: ' + peopleId, 'INFO_BAR');
-      return this.getCurrentUrl() == url;
+      return this.getCurrentUrl() === url;
     }, 1)
     .thenOpen(url)
     .thenBypassUnless(function() {

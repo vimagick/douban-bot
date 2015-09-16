@@ -27,6 +27,7 @@ group.info('python', function(gInfo) {
    .each(function(x) {
       topic.info(x.id, function(tInfo) {
         if (tInfo.likes > 20) {
+          people.report(tInfo.uid);
           topic.report(tInfo.id);
           _.each(tInfo.comments, function(y) {
             topic.reportComment(tInfo.id, y.id);
