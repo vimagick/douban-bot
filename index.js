@@ -26,7 +26,7 @@ group.info('python', function(gInfo) {
    .filter(function(x) {return x.reply > 100;})
    .each(function(x) {
       topic.info(x.id, function(tInfo) {
-        if (tInfo.likes > 100) {
+        if (tInfo.likes > 20) {
           topic.report(tInfo.id);
           _.each(tInfo.comments, function(y) {
             topic.reportComment(tInfo.id, y.id);
