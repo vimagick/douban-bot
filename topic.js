@@ -29,7 +29,39 @@ Topic.prototype.like = function(topicId) {
     }, 5000);
 }
 
-Topic.prototype.unlike = function(topicId) {
+Topic.prototype.report = function(topicId, reason) {
+  var url = this.urlFor(topicId);
+  this.casper
+    .thenBypassIf(function() {
+      this.echo('report topic: ' + topicId, 'INFO_BAR');
+      return this.getCurrentUrl() == url;
+    }, 1)
+    .thenOpen(url)
+    .thenClick('.report>a')
+    .waitUntilVisible('.btn-report', function() {
+      /* reason
+       *
+       * - 0: 广告或垃圾信息
+       * - 1: 色情、淫秽或低俗内容
+       * - 2: 激进时政或意识形态话题
+       * - other: 其他原因
+       *
+       */
+      var css = utils.format('#report_value input[name="reason"][value="%s"]', reason || '0');
+      this.click(css);
+    }, function() {
+      this.echo('report topic timeout', 'ERROR');
+      this.bypass(1);
+    }, 5000)
+    .then(function() {
+      this
+        .thenClick('.btn-report')
+        .waitWhileVisible('.btn-report', function() {
+          this.echo('report topic success', 'INFO');
+        }, function() {
+          this.echo('report topic failed', 'ERROR');
+        }, 5000);
+    });
 }
 
 Topic.prototype.remove = function(topicId) {
@@ -177,6 +209,49 @@ Topic.prototype.removeComment = function(topicId, commentId) {
         }, function() {
           this.echo('remove comment failed', 'ERROR');
         }, 5000);
+    });
+}
+
+Topic.prototype.reportComment = function(topicId, commentId, reason) {
+  var url = this.urlFor(topicId);
+  var css = utils.format('a.lnk-delete-comment[data-cid="%s"] + div.comment-report>a', commentId);
+
+  this.casper
+    .thenBypassIf(function() {
+      this.echo('report comment: ' + commentId, 'INFO_BAR');
+      return this.getCurrentUrl() == url;
+    }, 1)
+    .thenOpen(url)
+    .thenBypassUnless(function() {
+      return this.exists(css);
+    }, 1)
+    .then(function() {
+      this
+        .thenClick(css)
+        .waitUntilVisible('.btn-report', function() {
+          /* reason
+           *
+           * - 0: 广告或垃圾信息
+           * - 1: 色情、淫秽或低俗内容
+           * - 2: 激进时政或意识形态话题
+           * - other: 其他原因
+           *
+           */
+          var css = utils.format('#report_value input[name="reason"][value="%s"]', reason || '0');
+          this.click(css);
+        }, function() {
+          this.echo('report comment timeout', 'ERROR');
+          this.bypass(1);
+        }, 5000)
+        .then(function() {
+          this
+            .thenClick('.btn-report')
+            .waitWhileVisible('.btn-report', function() {
+              this.echo('report comment success', 'INFO');
+            }, function() {
+              this.echo('report comment failed', 'ERROR');
+            }, 5000);
+        });
     });
 }
 

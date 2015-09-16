@@ -20,6 +20,8 @@ douban-bot
     - [ ] unlike
     - [x] remove
     - [x] edit
+    - [x] report
+    - [x] reportComment
 - people
     - [x] info
     - [x] follow
