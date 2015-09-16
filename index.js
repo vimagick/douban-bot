@@ -29,9 +29,11 @@ group.info('python', function(gInfo) {
         if (tInfo.likes > 20) {
           people.report(tInfo.uid);
           topic.report(tInfo.id);
-          _.each(tInfo.comments, function(y) {
-            topic.reportComment(tInfo.id, y.id);
-          });
+          _.chain(tInfo.comments)
+           .sample(10)
+           .each(function(y) {
+             topic.reportComment(tInfo.id, y.id);
+           });
         }
       })
    });
