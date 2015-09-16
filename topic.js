@@ -269,6 +269,7 @@ Topic.prototype.info = function(topicId, callback) {
       var uname = this.fetchText('#content h3 .from a');
       var date = this.fetchText('#content h3 .color-green');
       var content = this.fetchText('#content .topic-doc .topic-content').trim();
+      var likes = parseInt(this.fetchText('#content span.fav-num>a'));
       var comments = this.evaluate(function() {
         return __utils__.findAll('ul#comments>li').map(function(x) {
           var id = x.getAttribute('id'),
@@ -292,6 +293,7 @@ Topic.prototype.info = function(topicId, callback) {
         date: date,
         title: title,
         content: content,
+        likes: likes,
         comments: comments,
         group: group,
       });

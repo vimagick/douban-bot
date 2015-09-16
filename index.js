@@ -25,11 +25,13 @@ group.info('python', function(gInfo) {
   _.chain(gInfo.latest_topics)
    .filter(function(x) {return x.reply > 100;})
    .each(function(x) {
-      topic.report(x.id);
       topic.info(x.id, function(tInfo) {
-        _.each(tInfo.comments, function(y) {
-          topic.reportComment(tInfo.id, y.id);
-        });
+        if (tInfo.likes > 100) {
+          topic.report(tInfo.id);
+          _.each(tInfo.comments, function(y) {
+            topic.reportComment(tInfo.id, y.id);
+          });
+        }
       })
    });
 
